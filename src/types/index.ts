@@ -3,18 +3,6 @@ export type EventStatus = 'draft' | 'published' | 'archived';
 export type RSVPStatus = 'pending' | 'confirmed' | 'declined';
 export type BlockType = 'hero' | 'intro' | 'greeting' | 'details' | 'countdown' | 'program' | 'location' | 'gallery' | 'rsvp' | 'story' | 'wishes' | 'dresscode' | 'baby-info' | 'footer';
 
-// Template = unique layout + animations + interactions
-export type TemplateType =
-  | 'classic-elegant'      // Traditional vertical scroll with envelope opening
-  | 'horizontal-story'     // Horizontal scroll like stories
-  | 'typewriter-reveal'    // Text appears as if typed
-  | 'light-switch'         // Dark theme, pull cord to toggle lights
-  | 'card-flip'            // Sections flip like cards
-  | 'parallax-cinematic'   // Heavy parallax, cinematic feel
-  | 'minimal-modern'       // Clean, lots of whitespace
-  | 'magazine-layout'      // Magazine-style varied sections
-  | 'kazakh-ornamental';   // Heavy Kazakh ornaments and patterns
-
 export interface User {
   id: string;
   login: string;
@@ -48,12 +36,6 @@ export interface EventPhotos {
   gallery?: string[];
 }
 
-export interface ImageSettings {
-  url: string;
-  brightness: number;
-  overlay: number;
-}
-
 export interface EventData {
   names: EventNames;
   date: string;
@@ -67,8 +49,6 @@ export interface EventData {
   rsvpDeadline?: string;
   program?: ProgramItem[];
   photos?: EventPhotos;
-  heroImage?: ImageSettings;
-  galleryImages?: ImageSettings[];
 }
 
 export interface BlockConfig {
@@ -96,7 +76,6 @@ export interface Event {
   status: EventStatus;
   eventType: EventType;
   data: EventData;
-  template: TemplateType;
   theme: EventThemeRef;
   blocks: BlockConfig[];
   seating?: SeatingTable[];
@@ -185,7 +164,6 @@ export interface PublicEventResponse {
   slug: string;
   eventType: EventType;
   data: EventData;
-  template: TemplateType;
   theme: ThemeConfig;
   blocks: BlockConfig[];
 }

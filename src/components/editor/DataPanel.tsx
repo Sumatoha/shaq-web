@@ -2,8 +2,6 @@
 
 import { useEditorStore } from '@/stores/editor-store';
 import { Input } from '@/components/ui/Input';
-import { ImageUploader, GalleryUploader } from './ImageUploader';
-import { ImageSettings } from '@/types';
 
 export function DataPanel() {
   const { event, updateData } = useEditorStore();
@@ -14,16 +12,6 @@ export function DataPanel() {
 
   return (
     <div className="space-y-6">
-      {/* Hero Photo */}
-      <section>
-        <h3 className="text-sm font-medium text-muted mb-3">Главное фото</h3>
-        <ImageUploader
-          value={data.heroImage as ImageSettings | null}
-          onChange={(settings) => updateData('heroImage', settings)}
-          aspectRatio="hero"
-        />
-      </section>
-
       {/* Names */}
       <section>
         <h3 className="text-sm font-medium text-muted mb-3">Имена</h3>
@@ -151,16 +139,6 @@ export function DataPanel() {
             onChange={(e) => updateData('rsvpDeadline', e.target.value)}
           />
         </div>
-      </section>
-
-      {/* Gallery Photos */}
-      <section>
-        <h3 className="text-sm font-medium text-muted mb-3">Галерея</h3>
-        <GalleryUploader
-          value={(data.galleryImages as ImageSettings[]) || []}
-          onChange={(images) => updateData('galleryImages', images)}
-          maxImages={10}
-        />
       </section>
     </div>
   );

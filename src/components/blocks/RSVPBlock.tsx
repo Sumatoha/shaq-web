@@ -96,10 +96,7 @@ export function RSVPBlock({ data, theme, variant, guestName, isPreview, onSubmit
             className="text-center text-sm mb-8"
             style={{ color: theme.colors.textMuted }}
           >
-            Пожалуйста, ответьте до {(() => {
-              const date = new Date(data.rsvpDeadline);
-              return isNaN(date.getTime()) ? '' : date.toLocaleDateString('ru-RU');
-            })()}
+            Пожалуйста, ответьте до {new Date(data.rsvpDeadline).toLocaleDateString('ru-RU')}
           </p>
         )}
 

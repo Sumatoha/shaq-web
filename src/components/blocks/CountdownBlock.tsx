@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { EventData, ThemeConfig } from '@/types';
-import { getTimeUntil, TimeUntilResult } from '@/lib/utils';
+import { getTimeUntil } from '@/lib/utils';
 
 interface CountdownBlockProps {
   data: EventData;
@@ -12,23 +12,17 @@ interface CountdownBlockProps {
 }
 
 export function CountdownBlock({ data, theme, variant, isPreview }: CountdownBlockProps) {
-  const [timeLeft, setTimeLeft] = useState<TimeUntilResult>(() => getTimeUntil(data.date, data.time));
+  const [timeLeft, setTimeLeft] = useState(getTimeUntil(data.date, data.time));
 
   useEffect(() => {
-    // Don't run timer in preview mode or if showing placeholder
-    if (isPreview || timeLeft.isPlaceholder) return;
+    if (isPreview) return;
 
     const timer = setInterval(() => {
       setTimeLeft(getTimeUntil(data.date, data.time));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [data.date, data.time, isPreview, timeLeft.isPlaceholder]);
-
-  // Update when data changes
-  useEffect(() => {
-    setTimeLeft(getTimeUntil(data.date, data.time));
-  }, [data.date, data.time]);
+  }, [data.date, data.time, isPreview]);
 
   const units = [
     { value: timeLeft.days, label: 'дней', labelKz: 'күн' },
@@ -37,7 +31,7 @@ export function CountdownBlock({ data, theme, variant, isPreview }: CountdownBlo
     { value: timeLeft.seconds, label: 'секунд', labelKz: 'секунд' },
   ];
 
-  if (timeLeft.isPast && !timeLeft.isPlaceholder) {
+  if (timeLeft.isPast) {
     return (
       <section
         className="py-16 px-8 text-center"
