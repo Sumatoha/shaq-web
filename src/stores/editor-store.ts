@@ -8,7 +8,7 @@ interface EditorState {
   currentTheme: ThemeConfig | null;
   selectedBlockIndex: number | null;
   previewMode: 'desktop' | 'mobile';
-  activePanel: 'blocks' | 'data' | 'theme' | 'guests' | 'seating';
+  activePanel: 'blocks' | 'data' | 'theme' | 'guests' | 'seating' | 'ai';
   isDirty: boolean;
   isSaving: boolean;
   isLoading: boolean;
@@ -24,7 +24,7 @@ interface EditorState {
   setBlockVariant: (index: number, variant: string) => void;
   selectBlock: (index: number | null) => void;
   setPreviewMode: (mode: 'desktop' | 'mobile') => void;
-  setActivePanel: (panel: 'blocks' | 'data' | 'theme' | 'guests' | 'seating') => void;
+  setActivePanel: (panel: 'blocks' | 'data' | 'theme' | 'guests' | 'seating' | 'ai') => void;
   saveEvent: () => Promise<void>;
   publishEvent: () => Promise<void>;
   updateSeating: (tables: SeatingTable[]) => void;
@@ -213,7 +213,7 @@ export const useEditorStore = create<EditorState>((set, get) => ({
     set({ previewMode: mode });
   },
 
-  setActivePanel: (panel: 'blocks' | 'data' | 'theme' | 'guests' | 'seating') => {
+  setActivePanel: (panel: 'blocks' | 'data' | 'theme' | 'guests' | 'seating' | 'ai') => {
     set({ activePanel: panel });
   },
 

@@ -11,6 +11,7 @@ import { DataPanel } from '@/components/editor/DataPanel';
 import { ThemePanel } from '@/components/editor/ThemePanel';
 import { GuestsPanel } from '@/components/editor/GuestsPanel';
 import { PreviewPanel } from '@/components/editor/PreviewPanel';
+import { AIPanel } from '@/components/editor/AIPanel';
 import toast from 'react-hot-toast';
 
 export default function EditorPage() {
@@ -78,6 +79,7 @@ export default function EditorPage() {
     { id: 'blocks', label: 'Блоки' },
     { id: 'theme', label: 'Тема' },
     { id: 'guests', label: 'Гости' },
+    { id: 'ai', label: 'AI' },
   ] as const;
 
   return (
@@ -158,6 +160,7 @@ export default function EditorPage() {
             {activePanel === 'blocks' && <BlocksPanel />}
             {activePanel === 'theme' && <ThemePanel />}
             {activePanel === 'guests' && <GuestsPanel />}
+            {activePanel === 'ai' && <AIPanel />}
           </div>
         </div>
 

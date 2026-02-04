@@ -168,6 +168,21 @@ export const api = {
 
   getGuestPhotos: (slug: string) =>
     request<{ photos: string[] }>(`/i/${slug}/photos`, { requireAuth: false }),
+
+  // AI Design
+  getAISession: (eventId: string) =>
+    request<{ messages: any[]; currentHtml: string }>(`/events/${eventId}/ai-design`),
+
+  generateAIDesign: (eventId: string, message: string) =>
+    request<{ html: string; message: string }>(`/events/${eventId}/ai-design`, {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    }),
+
+  resetAISession: (eventId: string) =>
+    request<void>(`/events/${eventId}/ai-design`, {
+      method: 'DELETE',
+    }),
 };
 
 export { ApiError };
