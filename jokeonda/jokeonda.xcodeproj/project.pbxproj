@@ -14,6 +14,7 @@
 		A1A1A1A10000000000000095 /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1A1A1000000000000C005 /* NotificationScheduler.swift */; };
 		A1A1A1A10000000000000096 /* BackgroundRefresh.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1A1A1000000000000C006 /* BackgroundRefresh.swift */; };
 		A1A1A1A10000000000000097 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1A1A1A1000000000000C007 /* Assets.xcassets */; };
+		A1A1A1A10000000000000098 /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1A1A1A1000000000000C009 /* DesignSystem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		A1A1A1A1000000000000C006 /* BackgroundRefresh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundRefresh.swift; sourceTree = "<group>"; };
 		A1A1A1A1000000000000C007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1A1A1A1000000000000C008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A1A1A1A1000000000000C009 /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 				A1A1A1A1000000000000C004 /* JokeStore.swift */,
 				A1A1A1A1000000000000C005 /* NotificationScheduler.swift */,
 				A1A1A1A1000000000000C006 /* BackgroundRefresh.swift */,
+				A1A1A1A1000000000000C009 /* DesignSystem.swift */,
 				A1A1A1A1000000000000C007 /* Assets.xcassets */,
 				A1A1A1A1000000000000C008 /* Info.plist */,
 			);
@@ -146,6 +149,7 @@
 				A1A1A1A10000000000000094 /* JokeStore.swift in Sources */,
 				A1A1A1A10000000000000095 /* NotificationScheduler.swift in Sources */,
 				A1A1A1A10000000000000096 /* BackgroundRefresh.swift in Sources */,
+				A1A1A1A10000000000000098 /* DesignSystem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

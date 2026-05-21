@@ -24,11 +24,11 @@ actor NotificationScheduler {
     }
 
     func reschedule(for jokes: [Joke]) async {
-        let granted = await requestAuthorizationIfNeeded()
-        guard granted else { return }
-
         let center = UNUserNotificationCenter.current()
         center.removeAllPendingNotificationRequests()
+
+        let granted = await requestAuthorizationIfNeeded()
+        guard granted else { return }
 
         let calendar = Calendar.current
         let now = Date()
@@ -60,15 +60,6 @@ actor NotificationScheduler {
                 try await center.add(request)
             } catch {
                 continue
-            }
-        }
-    }
-
-    func pendingCount() async -> Int {
-        let center = UNUserNotificationCenter.current()
-        return await withCheckedContinuation { cont in
-            center.getPendingNotificationRequests { reqs in
-                cont.resume(returning: reqs.count)
             }
         }
     }

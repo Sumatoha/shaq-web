@@ -18,6 +18,27 @@ struct Joke: Codable, Identifiable, Hashable {
         f.dateFormat = "yyyy-MM-dd"
         return f
     }()
+
+    static let shortDisplayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.dateFormat = "dd.MM.yy"
+        return f
+    }()
+
+    static let weekdayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ru_RU")
+        f.dateFormat = "EEEE"
+        return f
+    }()
+
+    static let headlineFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ru_RU")
+        f.dateFormat = "d MMMM"
+        return f
+    }()
 }
 
 struct JokeFeed: Codable {

@@ -7,14 +7,18 @@ final class JokeStore: ObservableObject {
     @Published private(set) var isLoading = false
     @Published private(set) var lastError: String?
 
-    private let feedURL = URL(string: "https://raw.githubusercontent.com/sumatoha/shaq-web/main/jokes.json")!
-    private let cacheURL: URL = {
+    private static let feedURL = URL(string: "https://raw.githubusercontent.com/sumatoha/shaq-web/main/jokes.json")!
+    private static let cacheURL: URL = {
         let dir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
         return dir.appendingPathComponent("jokes.json")
     }()
 
+    private var lastScheduledJokesHash: Int?
+
     func bootstrap() async {
-        loadFromCache()
+        if let cached = await Self.loadCache() {
+            feed = cached
+        }
         await refresh()
     }
 
@@ -22,30 +26,18 @@ final class JokeStore: ObservableObject {
         isLoading = true
         defer { isLoading = false }
         do {
-            var request = URLRequest(url: feedURL)
-            request.cachePolicy = .reloadIgnoringLocalCacheData
-            request.timeoutInterval = 15
-            let (data, response) = try await URLSession.shared.data(for: request)
-            guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
-                lastError = "HTTP error"
-                return
-            }
-            let decoded = try JSONDecoder().decode(JokeFeed.self, from: data)
+            let decoded = try await Self.fetchAndPersist()
             feed = decoded
-            try? data.write(to: cacheURL, options: .atomic)
             lastError = nil
-            await NotificationScheduler.shared.reschedule(for: decoded.jokes)
+
+            let hash = decoded.jokes.hashValue
+            if hash != lastScheduledJokesHash {
+                lastScheduledJokesHash = hash
+                await NotificationScheduler.shared.reschedule(for: decoded.jokes)
+            }
         } catch {
             lastError = error.localizedDescription
         }
-    }
-
-    private func loadFromCache() {
-        guard let data = try? Data(contentsOf: cacheURL),
-              let decoded = try? JSONDecoder().decode(JokeFeed.self, from: data) else {
-            return
-        }
-        feed = decoded
     }
 
     var todaysJoke: Joke? {
@@ -64,5 +56,29 @@ final class JokeStore: ObservableObject {
 
     static func today() -> String {
         Joke.dateFormatter.string(from: Date())
+    }
+
+    static func fetchAndPersist() async throws -> JokeFeed {
+        var request = URLRequest(url: feedURL)
+        request.cachePolicy = .useProtocolCachePolicy
+        request.timeoutInterval = 15
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw URLError(.badServerResponse)
+        }
+        let decoded = try JSONDecoder().decode(JokeFeed.self, from: data)
+        let path = cacheURL
+        Task.detached(priority: .utility) {
+            try? data.write(to: path, options: .atomic)
+        }
+        return decoded
+    }
+
+    private static func loadCache() async -> JokeFeed? {
+        let path = cacheURL
+        return await Task.detached(priority: .utility) { () -> JokeFeed? in
+            guard let data = try? Data(contentsOf: path) else { return nil }
+            return try? JSONDecoder().decode(JokeFeed.self, from: data)
+        }.value
     }
 }
