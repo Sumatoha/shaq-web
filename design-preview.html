@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>jokeonda — design preview</title>
+<style>
+  :root {
+    --bg: #0B0B0D;
+    --surface: #17171A;
+    --stroke: #2A2A30;
+    --fg: #F7F7F7;
+    --muted: #737380;
+    --dim: #47474D;
+    --accent: #D4FF1A;
+    --danger: #FF5C5C;
+    --page: #0E0E10;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--page);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    min-height: 100vh;
+    padding: 48px 24px 80px;
+  }
+
+  .header {
+    max-width: 1280px;
+    margin: 0 auto 40px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header h1 {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fg);
+  }
+  .header h1 .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+  .header .meta {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.16em;
+  }
+
+  .grid {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    gap: 36px;
+    justify-items: center;
+  }
+
+  .phone {
+    width: 390px;
+    height: 844px;
+    background: var(--bg);
+    border-radius: 56px;
+    border: 11px solid #1A1A1E;
+    box-shadow: 0 40px 80px -20px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.04) inset;
+    position: relative;
+    overflow: hidden;
+    color: var(--fg);
+  }
+
+  /* Dynamic island */
+  .island {
+    position: absolute;
+    top: 11px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 124px;
+    height: 36px;
+    background: #000;
+    border-radius: 999px;
+    z-index: 5;
+  }
+
+  /* Status bar */
+  .statusbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 58px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 30px 0;
+    z-index: 4;
+    font-family: -apple-system, "SF Pro Text", sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--fg);
+  }
+  .statusbar .icons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .statusbar svg { fill: var(--fg); }
+
+  /* Home indicator */
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--fg);
+    opacity: 0.85;
+  }
+
+  /* Content */
+  .content {
+    position: absolute;
+    inset: 0;
+    padding: 70px 24px 28px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 6px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .topbar .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: 0.16em;
+    color: var(--fg);
+  }
+  .topbar .brand .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent);
+  }
+  .topbar .clock {
+    color: var(--accent);
+    letter-spacing: 0.12em;
+  }
+  .topbar .slash { color: var(--dim); padding: 0 6px; }
+  .topbar .date { color: var(--muted); letter-spacing: 0.08em; }
+
+  .gap { flex: 0 0 28px; }
+  .gap-md { flex: 0 0 20px; }
+  .gap-sm { flex: 0 0 14px; }
+
+  .dateblock .weekday {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.27em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .dateblock .headline {
+    font-size: 56px;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    color: var(--fg);
+    line-height: 1;
+  }
+
+  .accentbar {
+    margin-top: 20px;
+    margin-bottom: 24px;
+    position: relative;
+    height: 6px;
+  }
+  .accentbar::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0; top: 2.5px;
+    height: 1px;
+    background: var(--stroke);
+  }
+  .accentbar::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    width: 72px; height: 6px;
+    background: var(--accent);
+    z-index: 1;
+  }
+
+  .joke-label {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.27em;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .joke-label.dim { color: rgba(212, 255, 26, 0.6); }
+
+  .joke-text {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.18;
+    color: var(--fg);
+  }
+  .joke-text.large { font-size: 34px; }
+  .joke-text.small { font-size: 22px; }
+
+  .silence {
+    font-size: 68px;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    color: var(--fg);
+  }
+  .silence-sub {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 12px;
+    line-height: 1.4;
+  }
+
+  .spacer { flex: 1; }
+
+  .footer { padding-bottom: 12px; }
+
+  .divider {
+    height: 1px;
+    background: var(--stroke);
+    margin-bottom: 14px;
+  }
+
+  .queue {
+    margin-bottom: 14px;
+  }
+  .queue-bars {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .queue-bars span {
+    width: 10px;
+    height: 18px;
+    background: var(--dim);
+    display: block;
+  }
+  .queue-bars span.lit { background: var(--accent); }
+  .queue-label {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+  }
+  .status-row .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--accent);
+    color: var(--bg);
+    padding: 18px 20px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-weight: 900;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+  }
+  .cta .arrow { font-size: 16px; }
+
+  .cta-denied {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1.5px solid var(--danger);
+    padding: 14px 18px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+  .cta-denied .left { color: var(--danger); font-size: 12px; }
+  .cta-denied .right { color: var(--fg); font-size: 11px; letter-spacing: 0.15em; }
+
+  .caption {
+    text-align: center;
+    margin-top: 16px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Notification preview */
+  .notif-section {
+    max-width: 1280px;
+    margin: 80px auto 0;
+  }
+  .notif-section h2 {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .notif-frame {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 28px;
+    background: linear-gradient(180deg, #2A2A38 0%, #15151B 100%);
+    border-radius: 32px;
+  }
+  .notif {
+    background: rgba(64, 64, 78, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 18px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    color: #fff;
+  }
+  .notif .icon {
+    width: 38px; height: 38px;
+    background: var(--accent);
+    border-radius: 9px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg);
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: -0.05em;
+  }
+  .notif .body { flex: 1; min-width: 0; }
+  .notif .meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: rgba(255,255,255,0.72);
+    margin-bottom: 2px;
+  }
+  .notif .title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #fff;
+    margin-bottom: 1px;
+  }
+  .notif .text {
+    font-size: 14px;
+    line-height: 1.32;
+    color: rgba(255,255,255,0.92);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1><span class="dot"></span>JOKEONDA · DESIGN PREVIEW</h1>
+  <div class="meta">3 STATES · iPhone 14 · 390 × 844</div>
+</div>
+
+<div class="grid">
+
+  <!-- STATE 1: today's joke, notifications on -->
+  <div>
+    <div class="phone">
+      <div class="island"></div>
+      <div class="statusbar">
+        <span>9:11</span>
+        <div class="icons">
+          <svg width="18" height="11" viewBox="0 0 18 11"><path d="M1 7h2v3H1zM5 5h2v5H5zM9 3h2v7H9zM13 1h2v9h-2z"/></svg>
+          <svg width="14" height="11" viewBox="0 0 14 11"><path d="M7 9.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/><path d="M7 1.5C4.5 1.5 2.2 2.4 0.5 4l1.4 1.4C3.2 4.1 5 3.5 7 3.5s3.8 0.6 5.1 1.9L13.5 4C11.8 2.4 9.5 1.5 7 1.5z"/></svg>
+          <svg width="26" height="11" viewBox="0 0 26 11"><rect x="0.5" y="1.5" width="22" height="8" rx="2" fill="none" stroke="#fff" stroke-opacity="0.4"/><rect x="2" y="3" width="17" height="5" rx="0.5"/><rect x="23" y="4" width="2" height="3" rx="0.5"/></svg>
+        </div>
+      </div>
+      <div class="content">
+        <div class="topbar">
+          <div class="brand"><span class="dot"></span>JOKEONDA</div>
+          <div>
+            <span class="clock">09:11</span><span class="slash">/</span><span class="date">21.05.26</span>
+          </div>
+        </div>
+        <div class="gap"></div>
+        <div class="dateblock">
+          <div class="weekday">СРЕДА</div>
+          <div class="headline">21 мая</div>
+        </div>
+        <div class="accentbar"></div>
+        <div class="joke-block">
+          <div class="joke-label">// ШУТКА ДНЯ</div>
+          <div class="joke-text large">— Доктор, я живу как в анекдоте. — В смысле? — Никто не смеётся.</div>
+        </div>
+        <div class="spacer"></div>
+        <div class="footer">
+          <div class="divider"></div>
+          <div class="queue">
+            <div class="queue-bars">
+              <span class="lit"></span><span class="lit"></span><span class="lit"></span><span class="lit"></span><span class="lit"></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="queue-label">ОЧЕРЕДЬ · 5 ИЗ 14 ДНЕЙ</div>
+          </div>
+          <div class="status-row">
+            <span class="dot"></span>
+            <span>УВЕДОМЛЕНИЯ ВКЛ · УДАР В 09:11</span>
+          </div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+    <div class="caption">01 · Шутка дня</div>
+  </div>
+
+  <!-- STATE 2: empty / no joke for today -->
+  <div>
+    <div class="phone">
+      <div class="island"></div>
+      <div class="statusbar">
+        <span>9:11</span>
+        <div class="icons">
+          <svg width="18" height="11" viewBox="0 0 18 11"><path d="M1 7h2v3H1zM5 5h2v5H5zM9 3h2v7H9zM13 1h2v9h-2z"/></svg>
+          <svg width="14" height="11" viewBox="0 0 14 11"><path d="M7 9.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/><path d="M7 1.5C4.5 1.5 2.2 2.4 0.5 4l1.4 1.4C3.2 4.1 5 3.5 7 3.5s3.8 0.6 5.1 1.9L13.5 4C11.8 2.4 9.5 1.5 7 1.5z"/></svg>
+          <svg width="26" height="11" viewBox="0 0 26 11"><rect x="0.5" y="1.5" width="22" height="8" rx="2" fill="none" stroke="#fff" stroke-opacity="0.4"/><rect x="2" y="3" width="17" height="5" rx="0.5"/><rect x="23" y="4" width="2" height="3" rx="0.5"/></svg>
+        </div>
+      </div>
+      <div class="content">
+        <div class="topbar">
+          <div class="brand"><span class="dot"></span>JOKEONDA</div>
+          <div>
+            <span class="clock">09:11</span><span class="slash">/</span><span class="date">26.05.26</span>
+          </div>
+        </div>
+        <div class="gap"></div>
+        <div class="dateblock">
+          <div class="weekday">ПОНЕДЕЛЬНИК</div>
+          <div class="headline">26 мая</div>
+        </div>
+        <div class="accentbar"></div>
+        <div class="joke-block">
+          <div class="joke-label dim">// ПУСТО</div>
+          <div class="silence">ТИШИНА.</div>
+          <div class="silence-sub">Шутки на сегодня нет. Завтра в 09:11.</div>
+        </div>
+        <div class="spacer"></div>
+        <div class="footer">
+          <div class="divider"></div>
+          <div class="queue">
+            <div class="queue-bars">
+              <span></span><span class="lit"></span><span class="lit"></span><span></span><span class="lit"></span>
+              <span class="lit"></span><span class="lit"></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="queue-label">ОЧЕРЕДЬ · 5 ИЗ 14 ДНЕЙ</div>
+          </div>
+          <div class="status-row">
+            <span class="dot"></span>
+            <span>УВЕДОМЛЕНИЯ ВКЛ · УДАР В 09:11</span>
+          </div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+    <div class="caption">02 · Сегодня без шутки</div>
+  </div>
+
+  <!-- STATE 3: permission CTA -->
+  <div>
+    <div class="phone">
+      <div class="island"></div>
+      <div class="statusbar">
+        <span>9:11</span>
+        <div class="icons">
+          <svg width="18" height="11" viewBox="0 0 18 11"><path d="M1 7h2v3H1zM5 5h2v5H5zM9 3h2v7H9zM13 1h2v9h-2z"/></svg>
+          <svg width="14" height="11" viewBox="0 0 14 11"><path d="M7 9.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/><path d="M7 1.5C4.5 1.5 2.2 2.4 0.5 4l1.4 1.4C3.2 4.1 5 3.5 7 3.5s3.8 0.6 5.1 1.9L13.5 4C11.8 2.4 9.5 1.5 7 1.5z"/></svg>
+          <svg width="26" height="11" viewBox="0 0 26 11"><rect x="0.5" y="1.5" width="22" height="8" rx="2" fill="none" stroke="#fff" stroke-opacity="0.4"/><rect x="2" y="3" width="17" height="5" rx="0.5"/><rect x="23" y="4" width="2" height="3" rx="0.5"/></svg>
+        </div>
+      </div>
+      <div class="content">
+        <div class="topbar">
+          <div class="brand"><span class="dot"></span>JOKEONDA</div>
+          <div>
+            <span class="clock">09:11</span><span class="slash">/</span><span class="date">21.05.26</span>
+          </div>
+        </div>
+        <div class="gap"></div>
+        <div class="dateblock">
+          <div class="weekday">СРЕДА</div>
+          <div class="headline">21 мая</div>
+        </div>
+        <div class="accentbar"></div>
+        <div class="joke-block">
+          <div class="joke-label">// ШУТКА ДНЯ</div>
+          <div class="joke-text">Лучший способ заснуть — встать пораньше, чтобы успеть на работу.</div>
+        </div>
+        <div class="spacer"></div>
+        <div class="footer">
+          <div class="divider"></div>
+          <div class="queue" style="margin-bottom: 18px;">
+            <div class="queue-bars">
+              <span class="lit"></span><span class="lit"></span><span class="lit"></span><span></span><span class="lit"></span>
+              <span class="lit"></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="queue-label">ОЧЕРЕДЬ · 5 ИЗ 14 ДНЕЙ</div>
+          </div>
+          <div class="cta">
+            <span>ВКЛЮЧИТЬ ШУТКУ ДНЯ</span>
+            <span class="arrow">→</span>
+          </div>
+        </div>
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+    <div class="caption">03 · Запрос уведомлений</div>
+  </div>
+
+</div>
+
+<!-- Notification preview -->
+<div class="notif-section">
+  <h2>09:11 · НА ЛОКЕ</h2>
+  <div class="notif-frame">
+    <div class="notif">
+      <div class="icon">J</div>
+      <div class="body">
+        <div class="meta">
+          <span>jokeonda</span>
+          <span>now</span>
+        </div>
+        <div class="title">Шутка дня</div>
+        <div class="text">Программист на собеседовании: «Я не понимаю, что значит „опыт работы“ — у меня есть Stack Overflow».</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
